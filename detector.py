@@ -1,16 +1,13 @@
 from collections import defaultdict
 
-# store failed attempts per IP
 failed_attempts = defaultdict(int)
 
-# threshold for brute force detection
+
 THRESHOLD = 3
 
 
 def detect_event(event):
-    """
-    Takes parsed event from parser.py and checks for suspicious activity
-    """
+
 
     alerts = []
 
