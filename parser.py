@@ -1,6 +1,6 @@
 import re
 
-pattern = r"(Failed|Accepted) password for (invalid user )?(\w+) from ([\d\.:]+)"
+pattern = r"(Failed|Accepted) password for (invalid user )?([a-zA-Z0-9._-]+) from ([\d\.]+)"
 
 def parse_line(line):
     match = re.search(pattern, line)

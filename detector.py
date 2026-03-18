@@ -1,38 +1,61 @@
+import time
 from collections import defaultdict
 
-failed_attempts = defaultdict(int)
 
 
-THRESHOLD = 3
 
 
-def detect_event(event):
+failed_attempts = defaultdict(list)
+
+THRESHOLD = 5
+WINDOW = 60
+
+def detect_event(even) :
 
 
     alerts = []
+    ip = event["ip"]
+    now = time.time()
 
+    # FAILED LOGIN
     if event["event"] == "failed":
-        ip = event["ip"]
 
-        failed_attempts[ip] += 1
+        failed_attempts[ip].append(now)
 
-        if failed_attempts[ip] >= THRESHOLD:
+        # keep only recent attempts
+        failed_attempts[ip] = [
+            t for t in failed_attempts[ip]
+            if now - t <= WINDOW
+        ]
+
+        if len(failed_attempts[ip]) >= THRESHOLD:
             alerts.append({
                 "type": "BRUTE_FORCE",
                 "ip": ip,
-                "attempts": failed_attempts[ip],
-                "message": f"Possible brute force attack from {ip}"
+                "attempts": len(failed_attempts[ip]),
+                "message": f"Brute force detected from {ip}"
             })
 
-    if event["event"] == "accepted":
-        user = event["user"]
-        ip = event["ip"]
+    # SUCCESS LOGIN
+    elif event["event"] == "accepted":
 
         alerts.append({
             "type": "LOGIN_SUCCESS",
-            "user": user,
+            "user": event["user"],
             "ip": ip,
-            "message": f"Successful login for {user} from {ip}"
+            "message": f"User {event['user']} logged in"
         })
+
+        # correlation: success after brute force
+        if len(failed_attempts[ip]) >= THRESHOLD:
+            alerts.append({
+                "type": "COMPROMISED_ACCOUNT",
+                "user": event["user"],
+                "ip": ip,
+                "message": "Login after brute force → possible compromise"
+            })
+
+        # reset after success
+        failed_attempts[ip] = []
 
     return alerts
