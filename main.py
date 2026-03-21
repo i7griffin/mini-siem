@@ -5,29 +5,38 @@ from reporter import report_alerts
 
 
 def stream_ssh_logs():
+    """Subprocess is generally a module which is used to direct and pipe the output of one command to another""" 
 
-    process = subprocess.Popen(["journalctl","-u","ssh","-f","-n",'0'],stdout=subprocess.PIPE , stderr=subprocess.PIPE , text=True , bufsize=1)
-
-    for line in process.stdout : 
-
-        yield line 
+    process = subprocess.Popen(
+        ["journalctl", "-f", "-n", "0"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1
+    )
+    """yield is used to produce a iterator in the group of results to parse and work on each one of them"""
+    for line in process.stdout:
+        yield line
 
 
 def main():
-    print("MINI SIEM started")
-    print("Monitoring logs in real time")
 
-    for line in stream_ssh_logs() :
+    print(" Mini SIEM Started")
+    print(" Monitoring SSH logs in real time...\n")
 
-	event = parse_line(line) 
+    for line in stream_ssh_logs():
 
-	if event :
+        """i used the below line to check whether there is problem in producing the logs or int he parser code"""
+        #print(line)
 
-	    alerts = detect_event(event)
+        event = parse_line(line)
 
-	    if alerts :
+        if event:
 
-		report_alerts(alerts)
+            alerts = detect_event(event)
+
+            if alerts:
+                report_alerts(alerts)
 
 
 if __name__ == "__main__":

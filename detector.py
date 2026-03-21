@@ -1,16 +1,12 @@
 import time
 from collections import defaultdict
 
-
-
-
-
 failed_attempts = defaultdict(list)
 
-THRESHOLD = 5
+THRESHOLD = 2
 WINDOW = 60
 
-def detect_event(even) :
+def detect_event(event) :
 
 
     alerts = []
