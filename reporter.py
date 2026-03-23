@@ -1,21 +1,29 @@
+import json
+from datetime import datetime
+
+ALERT_FILE = "alerts.json"
+
+
 def report_alerts(alerts):
 
     for alert in alerts:
 
-        if alert["type"] == "BRUTE_FORCE":
-            print("⚠ BRUTE FORCE DETECTED")
-            print("IP:", alert["ip"])
-            print("Attempts:", alert["attempts"])
+        # Add timestamp
+        alert["timestamp"] = datetime.now().isoformat()
 
-        elif alert["type"] == "LOGIN_SUCCESS":
-            print("✓ LOGIN SUCCESS")
-            print("User:", alert["user"])
-            print("IP:", alert["ip"])
+        # Print alert (optional)
+        print(alert)
 
-        elif alert["type"] == "COMPROMISED_ACCOUNT":
-            print(" ACCOUNT COMPROMISED")
-            print("User:", alert["user"])
-            print("IP:", alert["ip"])
+        # Load existing alerts
+        try:
+            with open(ALERT_FILE, "r") as f:
+                data = json.load(f)
+        except:
+            data = []
 
-        print("Message:", alert["message"])
-        print("----------------------------------")
+        # Add new alert
+        data.append(alert)
+
+        # Save back to file
+        with open(ALERT_FILE, "w") as f:
+            json.dump(data, f, indent=4)

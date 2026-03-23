@@ -1,0 +1,30 @@
+[
+    {
+        "type": "LOGIN_SUCCESS",
+        "user": "kali",
+        "ip": "::1",
+        "message": "User kali logged in",
+        "timestamp": "2026-03-22T23:56:36.047064"
+    },
+    {
+        "type": "BRUTE_FORCE",
+        "ip": "::1",
+        "attempts": 2,
+        "message": "Brute force detected from ::1",
+        "timestamp": "2026-03-22T23:57:38.213572"
+    },
+    {
+        "type": "BRUTE_FORCE",
+        "ip": "::1",
+        "attempts": 3,
+        "message": "Brute force detected from ::1",
+        "timestamp": "2026-03-22T23:57:43.548836"
+    },
+    {
+        "type": "BRUTE_FORCE",
+        "ip": "::1",
+        "attempts": 4,
+        "message": "Brute force detected from ::1",
+        "timestamp": "2026-03-22T23:57:51.546579"
+    }
+]
